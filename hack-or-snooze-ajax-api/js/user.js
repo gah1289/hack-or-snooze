@@ -134,12 +134,11 @@ function updateUIOnUserLogin() {
 	$favLink.show();
 	showStars();
 	updateNavOnLogin();
-	const starList = Array.from(document.querySelectorAll('.star'));
 	saveFavorites();
+	// removeFavorites();
 }
 
 function showStars(e) {
-	console.log(e);
 	for (let star of favStars) {
 		star.classList.remove('hidden');
 	}
@@ -147,38 +146,50 @@ function showStars(e) {
 
 function saveFavorites() {
 	const starList = Array.from(document.querySelectorAll('.star'));
-	console.log(starList);
+	const localList = JSON.parse(localStorage.getItem('list'));
+	// get items from local storage
+
 	for (let i = 0; i < starList.length; i++) {
-		starList[i].addEventListener('click', (e) => {
-			console.log(e);
+		starList[i].addEventListener('target', (e) => {
 			favoritesList.push(e.path[1]);
+			if (starList[i].checked === true || localStorageStories[i].isChecked === true) {
+				$('#favorites-list').append(`<li>${e.path[1].innerHTML}</li>`);
+			}
+
+			// $('#favorites-list').append(`<li>${e.path[1].innerHTML}</li>`);
+			let favs = document.querySelectorAll('#favorites-list .star');
+
+			for (let i = 0; i < favs.length; i++) {
+				favs[i].checked = true; // All items in #favorites-list should be checked by default. https://www.javascripttutorial.net/javascript-dom/javascript-get-child-element/
+			}
+			// pushes favorited items to favoritesList; all items sent to favoritesList are checked
+
 			if (!localStorageStories[i].isChecked) {
 				localStorageStories[i].isChecked = true;
+				starList[i].checked = true;
+				localStorage.setItem('favorites', JSON.stringify(favoritesList));
 			}
-			else if (localStorageStories[i].isChecked) {
-				localStorageStories[i].isChecked = false;
-			}
+			// else if (localStorageStories[i].isChecked) {
+			// 	localStorageStories[i].isChecked = false;
+			// }
+
 			localStorage.setItem('list', JSON.stringify(localStorageStories));
 		});
 	}
-}
-// save to localStorage
 
-function retrieveFromStorage() {
-	const localList = JSON.parse(localStorage.getItem('list'));
-	for (let i = 0; i < localList.length; i++) {
-		// starList[i].addEventListener('click', (e) => {
-		// 	console.log(e);
-		// 	favoritesList.push(e.path[1]);
-		// 	if (!localStorageStories[i].isChecked) {
-		// 		localStorageStories[i].isChecked = true;
-		// 	}
-		// 	else {
-		// 		localStorageStories[i].isChecked = false;
-		// 	}
-		// 	localStorage.setItem('list', JSON.stringify(localStorageStories));
-		// });
+	// console.log(localList);
+
+	for (let i = 0; i < starList.length; i++) {
+		if (localList[i].isChecked === true) {
+			starList[i].checked = true;
+		}
+		// keep stars checked upon refresh
+		if (localList[i].isChecked === false) {
+			starList[i].checked = false;
+		}
+		// problem: resetting checked items to false after second refresh
 	}
+	// console.log(localList);
 }
 
 //
