@@ -8,8 +8,14 @@
 
 function navAllStories(evt) {
 	console.debug('navAllStories', evt);
+
 	hidePageComponents();
+
+	$storyForm.hide();
+	// $favStoriesList.hide();
+	// $myStoriesList.hide();
 	putStoriesOnPage();
+	$('.star').show();
 }
 
 $body.on('click', '#nav-all', navAllStories);
@@ -38,7 +44,25 @@ function updateNavOnLogin() {
 // users click navbar link
 function navSubmitClick() {
 	console.debug('navSubmitClick');
-	$('#story-form').removeClass('hidden');
+	hidePageComponents();
+	$storyForm.show();
 }
 
 $('#submit-link').on('click', navSubmitClick);
+
+function navFavoritesClick() {
+	hidePageComponents();
+	$favStoriesList.show();
+	$('.star').hide();
+	if ($('.star').checked === false) {
+		$('.star').parentElement.hide();
+	}
+}
+$('#fav-link').on('click', navFavoritesClick);
+
+function navMyStoriesClick() {
+	hidePageComponents();
+	$myStoriesList.show();
+}
+
+$('#my-stories-link').on('click', navMyStoriesClick);

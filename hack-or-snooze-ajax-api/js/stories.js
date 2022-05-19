@@ -4,6 +4,7 @@
 let storyList;
 let favStar = '<input class="star hidden" type="checkbox">';
 let favStars = document.getElementsByClassName('star');
+// let removeBtn = '<input class="trash hidden" type="checkbox">';
 
 /** Get and show stories when site first loads. */
 
@@ -28,7 +29,7 @@ function generateStoryMarkup(story) {
 	const hostName = story.getHostName();
 	return $(`
       <li id="${story.storyId}">
-	${favStar}
+	  <input class="star hidden" type="checkbox">
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -42,6 +43,7 @@ function generateStoryMarkup(story) {
 /** Gets list of stories from server, generates their HTML, and puts on page. */
 
 function putStoriesOnPage() {
+	let a = document.querySelector('li a');
 	localStorageStories = [];
 	console.debug('putStoriesOnPage');
 
@@ -51,6 +53,8 @@ function putStoriesOnPage() {
 	for (let story of storyList.stories) {
 		const $story = generateStoryMarkup(story);
 		$allStoriesList.append($story);
+		// a.prepend(favStar);
+
 		localStorageStories.push({ listItem: $story.get()[0].innerText, isChecked: false });
 	}
 
@@ -68,9 +72,11 @@ async function submitStory(e) {
 	const story = await storyList.addStory(currentUser, newStory);
 	const $story = generateStoryMarkup(story);
 	$allStoriesList.prepend($story);
+	// $myStoriesList.prepend($story);
 	$storyForm.trigger('reset');
 }
 $storyForm.on('submit', submitStory);
+removeBtn.on('click', removeStory);
 
 async function login(evt) {
 	console.debug('login', evt);
@@ -91,3 +97,10 @@ async function login(evt) {
 }
 
 $loginForm.on('submit', login);
+
+function removeStory(e) {
+	const targetTagToLowerCase = e.target.tagName.toLowerCase();
+	if (targetTagToLowerCase === 'input' && targetTagToLowerCase.classList.contains('trash')) {
+		// e.target.parentNode.remove();
+	}
+}

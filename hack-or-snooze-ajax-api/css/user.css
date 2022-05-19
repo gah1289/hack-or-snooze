@@ -12,21 +12,3 @@
 .account-forms-container {
 	padding-left: 20px;
 }
-
-.star {
-	visibility: hidden;
-	font-size: 18px;
-	cursor: pointer;
-	vertical-align: 5px;
-	color: gray;
-}
-.star:before {
-	content: "\2606";
-	position: absolute;
-	visibility: visible;
-}
-.star:checked:before {
-	content: "\2605";
-	position: absolute;
-}
-/* http: ; //jsfiddle.net/binaryben/aLx3m4k5/ */

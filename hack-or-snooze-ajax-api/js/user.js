@@ -150,45 +150,67 @@ function saveFavorites() {
 	// get items from local storage
 
 	for (let i = 0; i < starList.length; i++) {
-		starList[i].addEventListener('target', (e) => {
-			favoritesList.push(e.path[1]);
-			if (starList[i].checked === true || localStorageStories[i].isChecked === true) {
-				$('#favorites-list').append(`<li>${e.path[1].innerHTML}</li>`);
+		starList[i].addEventListener('click', (e) => {
+			const targetTagToLowerCase = e.target.tagName.toLowerCase();
+			if (targetTagToLowerCase === 'input') {
+				let favListItem = e.target.parentElement.cloneNode(true); // https://gomakethings.com/how-to-copy-or-clone-an-element-with-vanilla-js/
+				if (e.target.checked === true) {
+					favoritesList.push(e.target.parentElement);
+					// let favListItem = e.target.parentElement.cloneNode(true); // https://gomakethings.com/how-to-copy-or-clone-an-element-with-vanilla-js/
+					$favStoriesList.append(favListItem);
+				}
+				else if (e.target.checked === false) {
+					console.log(e);
+					$favStoriesList.favListItem.remove();
+					favoritesList = favoritesList.filter((li) => li !== e.target.parentElement);
+					// $favStoriesList[0].children.forEach(
+					// 	(li) => (li === e.target.ParentElement ? (li.innerHtml = '') : false)
+					// );
+				}
 			}
-
-			// $('#favorites-list').append(`<li>${e.path[1].innerHTML}</li>`);
-			let favs = document.querySelectorAll('#favorites-list .star');
-
-			for (let i = 0; i < favs.length; i++) {
-				favs[i].checked = true; // All items in #favorites-list should be checked by default. https://www.javascripttutorial.net/javascript-dom/javascript-get-child-element/
-			}
-			// pushes favorited items to favoritesList; all items sent to favoritesList are checked
-
-			if (!localStorageStories[i].isChecked) {
-				localStorageStories[i].isChecked = true;
-				starList[i].checked = true;
-				localStorage.setItem('favorites', JSON.stringify(favoritesList));
-			}
-			// else if (localStorageStories[i].isChecked) {
-			// 	localStorageStories[i].isChecked = false;
-			// }
-
-			localStorage.setItem('list', JSON.stringify(localStorageStories));
 		});
 	}
 
+	//
+	// }
+	// favoritesList.push(e.path[1]);
+	// if (starList[i].checked === true || localStorageStories[i].isChecked === true) {
+	// 	$('#favorites-list').append(`<li>${e.path[1].innerHTML}</li>`);
+	// }
+
+	// // $('#favorites-list').append(`<li>${e.path[1].innerHTML}</li>`);
+	// let favs = document.querySelectorAll('#favorites-list .star');
+
+	// for (let i = 0; i < favs.length; i++) {
+	// 	favs[i].checked = true; // All items in #favorites-list should be checked by default. https://www.javascripttutorial.net/javascript-dom/javascript-get-child-element/
+	// }
+	// // pushes favorited items to favoritesList; all items sent to favoritesList are checked
+
+	// if (!localStorageStories[i].isChecked) {
+	// 	localStorageStories[i].isChecked = true;
+	// 	starList[i].checked = true;
+	// 	localStorage.setItem('favorites', JSON.stringify(favoritesList));
+	// }
+	// // else if (localStorageStories[i].isChecked) {
+	// // 	localStorageStories[i].isChecked = false;
+	// // }
+
+	// localStorage.setItem('list', JSON.stringify(localStorageStories));
+	// 	});
+	// }
+
 	// console.log(localList);
 
-	for (let i = 0; i < starList.length; i++) {
-		if (localList[i].isChecked === true) {
-			starList[i].checked = true;
-		}
-		// keep stars checked upon refresh
-		if (localList[i].isChecked === false) {
-			starList[i].checked = false;
-		}
-		// problem: resetting checked items to false after second refresh
-	}
+	// for (let i = 0; i < starList.length; i++) {
+	// 	if (localList[i].isChecked === true) {
+	// 		starList[i].checked = true;
+	// 	}
+	// 	// keep stars checked upon refresh
+	// 	if (localList[i].isChecked === false) {
+	// 		starList[i].checked = false;
+	// 	}
+	// 	// problem: resetting checked items to false after second refresh
+	// }
 	// console.log(localList);
 }
 
