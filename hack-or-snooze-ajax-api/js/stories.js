@@ -2,9 +2,10 @@
 
 // This is the global list of the stories, an instance of StoryList
 let storyList;
-let favStar = '<input class="star hidden" type="checkbox">';
+let favStar = '<input class="star" type="checkbox">';
 let favStars = document.getElementsByClassName('star');
-// let removeBtn = '<input class="trash hidden" type="checkbox">';
+let removeBtn = '<input class="trash hidden" type="checkbox">';
+let allRemoveBtns = document.getElementsByClassName('trash');
 
 /** Get and show stories when site first loads. */
 
@@ -29,7 +30,7 @@ function generateStoryMarkup(story) {
 	const hostName = story.getHostName();
 	return $(`
       <li id="${story.storyId}">
-	  <input class="star hidden" type="checkbox">
+	  ${favStar} ${removeBtn}
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -43,19 +44,17 @@ function generateStoryMarkup(story) {
 /** Gets list of stories from server, generates their HTML, and puts on page. */
 
 function putStoriesOnPage() {
-	let a = document.querySelector('li a');
 	localStorageStories = [];
 	console.debug('putStoriesOnPage');
-
 	$allStoriesList.empty();
+	$myStoriesList.empty();
 
 	// loop through all of our stories and generate HTML for them
 	for (let story of storyList.stories) {
 		const $story = generateStoryMarkup(story);
 		$allStoriesList.append($story);
-		// a.prepend(favStar);
-
-		localStorageStories.push({ listItem: $story.get()[0].innerText, isChecked: false });
+		story.username === currentUser.username ? $myStoriesList.append($story) : false;
+		// localStorageStories.push({ listItem: $story.get()[0].innerText, isChecked: false });
 	}
 
 	$allStoriesList.show();
@@ -67,16 +66,14 @@ async function submitStory(e) {
 	const author = $('#author-submit').val();
 	const title = $('#title-submit').val();
 	const url = $('#url-submit').val();
-	let isChecked = false;
-	const newStory = { title, author, url, isChecked };
+	const newStory = { title, author, url };
 	const story = await storyList.addStory(currentUser, newStory);
 	const $story = generateStoryMarkup(story);
 	$allStoriesList.prepend($story);
-	// $myStoriesList.prepend($story);
+	$myStoriesList.prepend($story);
 	$storyForm.trigger('reset');
 }
 $storyForm.on('submit', submitStory);
-removeBtn.on('click', removeStory);
 
 async function login(evt) {
 	console.debug('login', evt);
@@ -98,9 +95,11 @@ async function login(evt) {
 
 $loginForm.on('submit', login);
 
-function removeStory(e) {
-	const targetTagToLowerCase = e.target.tagName.toLowerCase();
-	if (targetTagToLowerCase === 'input' && targetTagToLowerCase.classList.contains('trash')) {
-		// e.target.parentNode.remove();
-	}
+async function deleteStory(e) {
+	let storyId = e.target.parentElement.id;
+	await storyList.removeStory(currentUser, storyId);
+	await putStoriesOnPage();
 }
+
+$allStoriesList.on('click', '.trash', deleteStory);
+$myStoriesList.on('click', '.trash', deleteStory);

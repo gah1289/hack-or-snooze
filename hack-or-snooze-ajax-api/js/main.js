@@ -1,3 +1,5 @@
+// problems : over all it's very buggy. the different links only work if you press "hack or snooze first." also, the favorites don't always stay saved.
+
 'use strict';
 
 // So we don't have to keep re-finding things on page, find DOM elements once:

@@ -72,12 +72,12 @@
 }
 
 .trash:before {
-	content: "&#128465";
+	content: "\1F5D1";
 	position: absolute;
 	visibility: visible;
 }
-.trash:checked:before {
-	content: "&#128465";
-	position: absolute;
+.trash:hover {
+	content: "\1F5D1";
+	position: relative;
 	color: red;
 }

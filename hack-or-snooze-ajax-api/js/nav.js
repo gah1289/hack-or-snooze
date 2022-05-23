@@ -8,14 +8,16 @@
 
 function navAllStories(evt) {
 	console.debug('navAllStories', evt);
-
 	hidePageComponents();
-
 	$storyForm.hide();
-	// $favStoriesList.hide();
-	// $myStoriesList.hide();
 	putStoriesOnPage();
 	$('.star').show();
+	const starList = Array.from(document.querySelectorAll('.star'));
+
+	starList.forEach(
+		(star) =>
+			localStorage.favorites.includes(star.parentElement.id) ? (star.checked = true) : (star.checked = false)
+	);
 }
 
 $body.on('click', '#nav-all', navAllStories);
@@ -52,16 +54,46 @@ $('#submit-link').on('click', navSubmitClick);
 
 function navFavoritesClick() {
 	hidePageComponents();
-	$favStoriesList.show();
-	$('.star').hide();
-	if ($('.star').checked === false) {
-		$('.star').parentElement.hide();
-	}
+	$storyForm.hide();
+	$allStoriesList.show();
+	Array.from($('.star')).forEach(
+		(star) =>
+			star.checked === false
+				? star.parentElement.classList.add('hidden')
+				: star.parentElement.classList.remove('hidden')
+	);
+	Array.from($('.star')).forEach(function(star) {
+		star.addEventListener('click', function() {
+			star.parentElement.classList.add('hidden');
+			localStorage.removeItem('favorites');
+			favoritesList = favoritesList.filter(function(favorite) {
+				favorite !== star.parentElement;
+				localStorage.removeItem('favorites');
+				localStorage.setItem('favorites', favorite);
+			});
+		});
+		// localStorage.favorites.includes(star.parentElement.id) ? (star.checked = true) : (star.checked = false);
+	});
 }
 $('#fav-link').on('click', navFavoritesClick);
+// Generate favorites list
 
 function navMyStoriesClick() {
+	putStoriesOnPage();
+	$myStoriesList.removeClass('hidden');
+	let li = document.querySelectorAll('li');
+	li.forEach(function(story) {
+		let storyUser = story.children[5];
+		if (storyUser.innerText.indexOf(currentUser.username) !== -1) {
+			let trash = story.querySelector('.trash');
+			trash.classList.remove('hidden');
+		}
+		else {
+			storyUser.parentElement.classList.add('hidden');
+		}
+	});
 	hidePageComponents();
+
 	$myStoriesList.show();
 }
 
